@@ -1,0 +1,465 @@
+#%RAML 0.8
+title: Proxy Docker Remote API
+version: v1.24.1
+baseUri: 'https://{host}'
+baseUriParameters:
+  host:
+    description: Your host name
+#description: A Front end for the Docker API
+#mediaType: application/json
+#securitySchemes:
+#  oauth_2_0: !include securitySchemes/oauth_2_0.raml
+#resourceTypes:
+#  collection: !include types/collection.raml
+#traits:
+#securedBy: [ oauth_2_0 ]
+
+# types:
+#   CreateContainer:
+#     type: object
+#     properties:
+#       Hostname: 
+#         type: string
+#         description: A string value containing the hostname to use for the container. This must be a valid RFC 1123 hostname.
+#       Domainname: 
+#         type: string
+#         description: A string value containing the domain name to use for the container.
+#       User: 
+#         type: string
+#         description: A string value specifying the user inside the container.
+#       AttachStdin: 
+#         type: boolean
+#         description: Boolean value, attaches to stdin.
+#       AttachStdout: 
+#         type: boolean
+#         description: Boolean value, attaches to stdout.
+#       AttachStderr: 
+#         type: boolean
+#         description: Boolean value, attaches to stderr.
+#       Tty: 
+#         type: boolean
+#         description: Boolean value, Attach standard streams to a tty, including stdin if it is not closed.
+#       OpenStdin: 
+#         type: boolean
+#         description: Boolean value, opens stdin,
+#       StdinOnce: 
+#         type: boolean
+#         description: Boolean value, close stdin after the 1 attached client disconnects.
+#       Env: 
+#         type: string
+#         description: A list of environment variables in the form of ["VAR=value"[,"VAR2=value2"]]
+#       Labels: 
+#         type: object
+#         description: 'Adds a map of labels to a container. To specify a map: {"key":"value"[,"key2":"value2"]}'
+#       Cmd: 
+#         type: string | array
+#         description: Command to run specified as a string or an array of strings.
+#       Entrypoint:
+#         type: string | array
+#         description: Set the entry point for the container as a string or an array of strings.
+#       Image: 
+#         type: string
+#         description: A string specifying the image name to use for the container.
+#       Volumes: 
+#         type: string
+#         description: An object mapping mount point paths (strings) inside the container to empty objects.
+#       WorkingDir:
+#         type: string
+#         description:  A string specifying the working directory for commands to run in.
+#       NetworkDisabled: 
+#         type: boolean
+#         description: Boolean value, when true disables networking for the container
+#       ExposedPorts: 
+#         type: object
+#         description: 'An object mapping ports to an empty object in the form of: "ExposedPorts": { "<port>/<tcp|udp>: {}" }'
+#       StopSignal: 
+#         type: string | integer
+#         description: Signal to stop a container as a string or unsigned integer. SIGTERM by default.
+#       HostConfig:
+#         Binds: 
+#           type: array
+#           description: |
+#             A list of volume bindings for this container. Each volume binding is a string in one of these forms:
+#               host_path:container_path to bind-mount a host path into the container
+#               host_path:container_path:ro to make the bind-mount read-only inside the container.
+#               volume_name:container_path to bind-mount a volume managed by a volume plugin into the container.
+#               volume_name:container_path:ro to make the bind mount read-only inside the container.
+#         Links: 
+#           type: array
+#           description: A list of links for the container. Each link entry should be in the form of container_name:alias.
+#         Memory: 
+#           type: integer
+#           description: Memory limit in bytes.
+#         MemorySwap: 
+#           type: integer
+#           description: Total memory limit (memory + swap); set -1 to enable unlimited swap. You must use this with memory and make the swap value larger than memory.
+#         MemoryReservation:
+#           type: integer
+#           description: Memory soft limit in bytes.
+#         KernelMemory:
+#           type: integer
+#           description: Kernel memory limit in bytes.
+#         CpuPercent:
+#           type: integer
+#           minimum: 0
+#           description: An integer value containing the usable percentage of the available CPUs. (Windows daemon only)
+#         CpuShares:
+#           type: integer
+#           minimum: 0
+#           description: An integer value containing the container’s CPU Shares (ie. the relative weight vs other containers).
+#         CpuPeriod:
+#           type: integer
+#           minimum: 0
+#           description: The length of a CPU period in microseconds.
+#         CpuQuota:
+#           type: integer
+#           minimum: 0
+#           description: Microseconds of CPU time that the container can get in a CPU period.
+#         CpusetCpus:
+#           type: string
+#           description: String value containing the cgroups CpusetCpus to use.
+#         CpusetMems:
+#           type: integer
+#           description: Memory nodes (MEMs) in which to allow execution (0-3, 0,1). Only effective on NUMA systems.
+#         MaximumIOps:
+#           type: integer
+#           minimum: 0
+#           description: Maximum IO absolute rate in terms of IOps.
+#         MaximumIOBps:
+#           type: integer
+#           minimum: 0
+#           description: Maximum IO absolute rate in terms of bytes per second.
+#         BlkioWeight:
+#           type: integer
+#           minimum: 10
+#           maximum: 1000
+#           description: Block IO weight (relative weight) accepts a weight value between 10 and 1000.
+#         BlkioWeightDevice:
+#           type: object
+#           description: |
+#             Block IO weight (relative device weight) in the form of: "BlkioWeightDevice": [{"Path": "device_path", "Weight": weight}]
+#         BlkioDeviceReadBps:
+#           type: object
+#           description: |
+#             Limit read rate (bytes per second) from a device in the form of: "BlkioDeviceReadBps": [{"Path": "device_path", "Rate": rate}], for example: "BlkioDeviceReadBps": [{"Path": "/dev/sda", "Rate": "1024"}]"
+#         BlkioDeviceWriteBps:
+#           type: object
+#           description: |
+#             Limit write rate (bytes per second) to a device in the form of: "BlkioDeviceWriteBps": [{"Path": "device_path", "Rate": rate}], for example: "BlkioDeviceWriteBps": [{"Path": "/dev/sda", "Rate": "1024"}]"
+#         BlkioDeviceReadIOps:
+#           type: object
+#           description: |
+#             Limit read rate (IO per second) from a device in the form of: "BlkioDeviceReadIOps": [{"Path": "device_path", "Rate": rate}], for example: "BlkioDeviceReadIOps": [{"Path": "/dev/sda", "Rate": "1000"}]
+#         BlkioDeviceWiiteIOps:
+#           type: object
+#           description: |
+#             Limit write rate (IO per second) to a device in the form of: "BlkioDeviceWriteIOps": [{"Path": "device_path", "Rate": rate}], for example: "BlkioDeviceWriteIOps": [{"Path": "/dev/sda", "Rate": "1000"}]
+#         MemorySwappiness:
+#           type: integer
+#           minimum: 0
+#           maximum: 100
+#           description: Tune a container’s memory swappiness behavior. Accepts an integer between 0 and 100.
+#         OomKillDisable:
+#           type: integer
+#           description: Boolean value, whether to disable OOM Killer for the container or not.
+#         OomScoreAdj:
+#           type: integer
+#           description: An integer value containing the score given to the container in order to tune OOM killer preferences.
+#         PidMode:
+#           type: string
+#           description: |
+#             Set the PID (Process) Namespace mode for the container; "container:<name|id>": joins another container’s PID namespace "host": use the host’s PID namespace inside the container
+#         PidsLimit:
+#           type: integer
+#           description: Tune a container’s pids limit. Set -1 for unlimited.
+#         PortBindings:
+#           type: object
+#           description: |
+#             A map of exposed container ports and the host port they should map to. A JSON object in the form { <port>/<protocol>: [{ "HostPort": "<port>" }] } Take note that port is specified as a string and not an integer value.
+#         PublishAllPorts:
+#           type: boolean
+#           description: Allocates a random host port for all of a container’s exposed ports. Specified as a boolean value.
+#         Privileged:
+#           type: boolean
+#           description: Gives the container full access to the host. Specified as a boolean value.
+#         ReadonlyRootfs:
+#           type: boolean
+#           description: Mount the container’s root filesystem as read only. Specified as a boolean value.
+#         Dns:
+#           type: array
+#           description: A list of DNS servers for the container to use.
+#         DnsOptions:
+#           type: array
+#           description: A list of DNS options
+#         DnsSearch:
+#           type: array
+#           description: A list of DNS search domains
+#         ExtraHosts:
+#           type: array
+#           description: |
+#             A list of hostnames/IP mappings to add to the container’s /etc/hosts file. Specified in the form ["hostname:IP"].
+#         VolumesFrom:
+#           type: array
+#           description: |
+#             A list of volumes to inherit from another container. Specified in the form <container name>[:<ro|rw>]
+#         CapAdd:
+#           type: array
+#           description: A list of kernel capabilities to add to the container.
+#         Capdrop:
+#           type: array
+#           description: A list of kernel capabilities to drop from the container.
+#         GroupAdd:
+#           type: array
+#           description: A list of additional groups that the container process will run as
+#         RestartPolicy:
+#           type: string
+#           description: |
+#             The behavior to apply when the container exits. The value is an object with a Name property of either "always" to always restart, "unless-stopped" to restart always except when user has manually stopped the container or "on-failure" to restart only when the container exit code is non-zero. If on-failure is used, MaximumRetryCount controls the number of times to retry before giving up. The default is not to restart. (optional) An ever increasing delay (double the previous delay, starting at 100mS) is added before each restart to prevent flooding the server.
+#         UsernsMode:
+#           type: string
+#           description: |
+#             Sets the usernamespace mode for the container when usernamespace remapping option is enabled. supported values are: host.
+#         NetworkMode:
+#           type: string
+#           description: |
+#             Sets the networking mode for the container. Supported standard values are: bridge, host, none, and container:<name|id>. Any other value is taken as a custom network’s name to which this container should connect to.
+#         Devices:
+#           type: array
+#           description: |
+#             A list of devices to add to the container specified as a JSON object in the form { "PathOnHost": "/dev/deviceName", "PathInContainer": "/dev/deviceName", "CgroupPermissions": "mrw"}
+#         Ulimits:
+#           type: array
+#           description: |
+#             A list of ulimits to set in the container, specified as { "Name": <name>, "Soft": <soft limit>, "Hard": <hard limit> }, for example: Ulimits: { "Name": "nofile", "Soft": 1024, "Hard": 2048 }
+#         Sysctls:
+#           type: array
+#           description: |
+#             A list of kernel parameters (sysctls) to set in the container, specified as { <name>: <Value> }, for example: { "net.ipv4.ip_forward": "1" }
+#         SecurityOpt:
+#           type: array
+#           description: A list of string values to customize labels for MLS systems, such as SELinux.
+#         StorageOpt:
+#           type: object
+#           description: |
+#             Storage driver options per container. Options can be passed in the form {"size":"120G"}
+#         LogConfig:
+#           type: object
+#           description: |
+#             Log configuration for the container, specified as a JSON object in the form { "Type": "<driver_name>", "Config": {"key1": "val1"}}. Available types: json-file, syslog, journald, gelf, fluentd, awslogs, splunk, etwlogs, none. json-file logging driver.
+#         CgroupParent:
+#           type: string
+#           description: |
+#             Path to cgroups under which the container’s cgroup is created. If the path is not absolute, the path is considered to be relative to the cgroups path of the init process. Cgroups are created if they do not already exist.
+#         VolumeDriver:
+#           type: string
+#           description: |
+#             Driver that this container users to mount volumes.
+#         ShmSize:
+#           type: integer
+#           description: |
+#             Size of /dev/shm in bytes. The size must be greater than 0. If omitted the system uses 64MB.
+
+/container:
+  /json:
+    get:
+      queryParameters:
+        all:
+          type: string
+            # enum:
+            #  - 1
+            #  - True
+            #  - true
+            #  - 0
+            #  - False
+            #  - false
+          description: Show all containers. Only running containers are shown by default (i.e., this defaults to false)
+        limit:
+          type: integer
+          description: Show limit last created containers, include non-running ones.
+        since:
+          type: string
+          description: Show only containers created since Id, include non-running ones.
+        before:
+          type: string
+          description: Show only containers created before Id, include non-running ones.
+        size:
+          type: string
+            # enum:
+            #  - 1
+            #  - True 
+            #  - true
+            #  - 0
+            #  - False
+            #  - false
+          description: Show the containers sizes
+        filters: 
+          description: A JSON encoded value of the filters (a map[string][]string) to process on the containers list.
+          type: string
+          #exited=<int>; -- containers with exit code of <int> ;
+          #status=(created|restarting|running|paused|exited|dead)
+          #label=key or label="key=value" of a container label
+          #isolation=(default|process|hyperv) (Windows daemon only)
+          #ancestor=(<image-name>[:<tag>], <image id> or <image@digest>)
+          #before=(<container id> or <container name>)
+          #since=(<container id> or <container name>)
+          #volume=(<volume name> or <mount point destination>)
+          #network=(<network id> or <network name>)
+      responses:
+        200:
+        400:
+        500:
+
+
+/containers:
+  /create:
+    post:
+      queryParameters:
+        name:
+          description: Assign the specified name to the container. Must match /?[a-zA-Z0-9_-]+.
+      body:
+        #type: CreateContainer
+      responses:
+        201: 
+          description: no error
+        400: 
+          description: bad parameter
+        404:
+          description: no such container
+        406:
+          description: impossible to attach (container not running)
+        409:
+          description: conflict
+        500:
+          description: server error
+
+  /{id}:
+    /top:
+      get:
+        queryParameters:
+          ps_args:
+            description: ps arguments to use (e.g., aux), defaults to -ef
+
+    /logs:
+      get:
+        description: Get stdout and stderr logs from the container id (stream).
+        queryParameters:    
+          details:
+            description: 1/True/true or 0/False/flase, Show extra details provided to logs. Default false.
+          follow:
+            description: 1/True/true or 0/False/false, return stream. Default false.
+          stdout:
+            description: 1/True/true or 0/False/false, show stdout log. Default false.
+          stderr:
+            description: 1/True/true or 0/False/false, show stderr log. Default false.
+          since:
+            description: |
+              UNIX timestamp (integer) to filter logs. Specifying a timestamp will only output log-entries since that timestamp. Default: 0 (unfiltered)
+          timestamps:
+            description: 1/True/true or 0/False/false, print timestamps for every log line. Default false.
+          tail:
+            description: |
+              Output specified number of lines at the end of logs: all or <number>. Default all.
+        responses:
+          101:
+            description: no error, hints proxy about hijacking
+          200:
+            description: no error, no upgrade header found
+          404:
+            description: no such container
+          500:
+            description: server error
+
+    /changes:
+      get:
+        description: Inspect changes on container id’s filesystem.
+        responses:        
+          200:
+            description: no error
+          404:
+            description: no such container
+          500:
+            description: server error
+
+    /export:
+      get:
+        description: |
+          Export the contents of container id (Stream)
+        responses:
+          200:
+            description: |
+              no error
+          404:
+            description: |
+              no such container
+          500:
+            description: |
+              server error
+
+    /stats:
+      get:
+        description: This endpoint returns a live stream of a container’s resource usage statistics.
+        queryParameters:
+          stream:
+            description: 1/True/true or 0/False/false, pull stats once then disconnect. Default true.
+        responses:     
+          200:
+            description: no error
+          404:
+            description: no such container
+          500:
+            description: server error
+
+    /resize:
+      post:
+        description: |
+          Resize the TTY for container with id. The unit is number of characters. You must restart the container for the resize to take effect.
+        queryParameters:
+          h:
+            description: height of tty session
+          w:
+            description: width
+        responses:
+          200:
+            description: no error
+          404:
+            description: No such container
+          500:
+            description: Cannot resize container
+
+    /start:
+      post:
+        description: Start the container id
+        queryParameters:
+          detachKeys:
+            description: |
+              Override the key sequence for detaching a container. Format is a single character [a-Z] or ctrl-<value> where <value> is one of: a-z, @, ^, [, , or _.
+        responses:
+          204:
+            description: no error
+          304:
+            description: container already started
+          404:
+            description: no such container
+          500:
+            description: server error
+
+    /stop:
+      post:
+        description: Stop the container id
+        queryParameters:
+          t: 
+            description: number of seconds to wait before killing the container
+        responses:
+          204:
+            description: no error
+          304:
+            description: container already stopped
+          404:
+            description: no such container
+          500:
+            description: server error
+
+    
+
+
+

@@ -1,0 +1,4 @@
+--require test/mocha_setup
+--reporter spec
+--ui bdd
+

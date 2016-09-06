@@ -1,0 +1,39 @@
+{
+  "name": "docker-api-proxy",
+  "version": "0.1.0",
+  "description": "Get control of the Docker Remote API",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/deployable/docker-api-proxy.gi.git"
+  },
+  "keywords": [
+    "docker",
+    "api",
+    "proxy",
+    "osprey",
+    "raml"
+  ],
+  "author": "Matt Hoyle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/deployable/docker-api-proxy.gi/issues"
+  },
+  "homepage": "https://github.com/deployable/docker-api-proxy.gi#readme",
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "commonmark": "^0.26.0",
+    "express": "^4.14.0",
+    "osprey": "^0.3.2",
+    "supertest": "^2.0.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "cheerio": "^0.22.0",
+    "mocha": "^3.0.2",
+    "nodemon": "^1.10.2"
+  }
+}

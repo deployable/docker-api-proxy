@@ -1,0 +1,1053 @@
+title: Docker API 1.24
+/containers:
+  /json:
+    get:
+      description: List containers
+      queryParamaters:
+        all:
+          description: '1/True/true or 0/False/false, Show all containers.'
+        limit:
+          description: Show limit last created
+        since:
+          description: 'Show only containers created since Id, include'
+        before:
+          description: 'Show only containers created before Id, include'
+        size:
+          description: '1/True/true or 0/False/false, Show the containers'
+        filters:
+          description: >-
+            a JSON encoded value of the filters (a map[string][]string) to
+            process on the containers list. Available filters:
+      responses:
+        '200':
+          description: no error
+        '400':
+          description: bad parameter
+        '500':
+          description: server error
+  /create:
+    post:
+      description: Create a container
+      queryParamaters:
+        name:
+          description: Assign the specified name to the container. Must
+      responses:
+        '201':
+          description: no error
+        '400':
+          description: bad parameter
+        '404':
+          description: no such container
+        '406':
+          description: impossible to attach (container not running)
+        '409':
+          description: conflict
+        '500':
+          description: server error
+  '/{id}':
+    /json:
+      get:
+        description: Inspect a container
+        queryParamaters:
+          size:
+            description: >-
+              1/True/true or 0/False/false, return container size information.
+              Default is false.
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    /top:
+      get:
+        description: List processes running inside a container
+        queryParamaters:
+          ps_args:
+            description: 'ps arguments to use (e.g., aux), defaults to -ef'
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    /logs:
+      get:
+        description: Get container logs
+        queryParamaters:
+          details:
+            description: >-
+              1/True/true or 0/False/flase, Show extra details provided to logs.
+              Default false.
+          follow:
+            description: '1/True/true or 0/False/false, return stream. Default false.'
+          stdout:
+            description: '1/True/true or 0/False/false, show stdout log. Default false.'
+          stderr:
+            description: '1/True/true or 0/False/false, show stderr log. Default false.'
+          since:
+            description: UNIX timestamp (integer) to filter logs. Specifying a timestamp
+          timestamps:
+            description: '1/True/true or 0/False/false, print timestamps for'
+          tail:
+            description: >-
+              Output specified number of lines at the end of logs: all or
+              <number>. Default all.
+        responses:
+          '101':
+            description: 'no error, hints proxy about hijacking'
+          '200':
+            description: 'no error, no upgrade header found'
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    /changes:
+      get:
+        description: Inspect changes on a container’s filesystem
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    /export:
+      get:
+        description: Export a container
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    /stats:
+      get:
+        description: Get container stats based on resource usage
+        queryParamaters:
+          stream:
+            description: >-
+              1/True/true or 0/False/false, pull stats once then disconnect.
+              Default true.
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    /resize:
+      post:
+        description: Resize a container TTY
+        queryParamaters:
+          h:
+            description: height of tty session
+          w:
+            description: width
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: No such container
+          '500':
+            description: Cannot resize container
+    /start:
+      post:
+        description: Start a container
+        queryParamaters:
+          detachKeys:
+            description: Override the key sequence for detaching a
+        responses:
+          '204':
+            description: no error
+          '304':
+            description: container already started
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    /stop:
+      post:
+        description: Stop a container
+        queryParamaters:
+          t:
+            description: number of seconds to wait before killing the container
+        responses:
+          '204':
+            description: no error
+          '304':
+            description: container already stopped
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    /restart:
+      post:
+        description: Restart a container
+        queryParamaters:
+          t:
+            description: number of seconds to wait before killing the container
+        responses:
+          '204':
+            description: no error
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    /kill:
+      post:
+        description: Kill a container
+        queryParamaters:
+          signal:
+            description: 'Signal to send to the container: integer or string like SIGINT.'
+        responses:
+          '204':
+            description: no error
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    /update:
+      post:
+        description: Update a container
+        responses:
+          '200':
+            description: no error
+          '400':
+            description: bad parameter
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    /rename:
+      post:
+        description: Rename a container
+        queryParamaters:
+          name:
+            description: new name for the container
+        responses:
+          '204':
+            description: no error
+          '404':
+            description: no such container
+          '409':
+            description: conflict name already assigned
+          '500':
+            description: server error
+    /pause:
+      post:
+        description: Pause a container
+        responses:
+          '204':
+            description: no error
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    /unpause:
+      post:
+        description: Unpause a container
+        responses:
+          '204':
+            description: no error
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    /attach:
+      post:
+        description: Attach to a container
+        queryParamaters:
+          detachKeys:
+            description: Override the key sequence for detaching a
+          logs:
+            description: '1/True/true or 0/False/false, return logs. Default false.'
+          stream:
+            description: '1/True/true or 0/False/false, return stream.'
+          stdin:
+            description: '1/True/true or 0/False/false, if stream=true, attach'
+          stdout:
+            description: '1/True/true or 0/False/false, if logs=true, return'
+          stderr:
+            description: '1/True/true or 0/False/false, if logs=true, return'
+        responses:
+          '101':
+            description: 'no error, hints proxy about hijacking'
+          '200':
+            description: 'no error, no upgrade header found'
+          '400':
+            description: bad parameter
+          '404':
+            description: no such container
+          '409':
+            description: container is paused
+      /ws:
+        get:
+          description: Attach to a container (websocket)
+          queryParamaters:
+            detachKeys:
+              description: Override the key sequence for detaching a
+            logs:
+              description: '1/True/true or 0/False/false, return logs. Default false.'
+            stream:
+              description: '1/True/true or 0/False/false, return stream.'
+            stdin:
+              description: '1/True/true or 0/False/false, if stream=true, attach'
+            stdout:
+              description: '1/True/true or 0/False/false, if logs=true, return'
+            stderr:
+              description: '1/True/true or 0/False/false, if logs=true, return'
+          responses:
+            '200':
+              description: no error
+            '400':
+              description: bad parameter
+            '404':
+              description: no such container
+            '500':
+              description: server error
+    /wait:
+      post:
+        description: Wait a container
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: no such container
+          '500':
+            description: server error
+    delete:
+      description: Remove a container
+      queryParamaters:
+        v:
+          description: '1/True/true or 0/False/false, Remove the volumes'
+        force:
+          description: '1/True/true or 0/False/false, Kill then remove the container.'
+      responses:
+        '204':
+          description: no error
+        '400':
+          description: bad parameter
+        '404':
+          description: no such container
+        '409':
+          description: conflict
+        '500':
+          description: server error
+    /archive:
+      head:
+        description: Retrieving information about files and folders in a container
+      get:
+        description: Get an archive of a filesystem resource in a container
+        queryParamaters:
+          path:
+            description: resource in the container’s filesystem to archive. Required.
+        responses:
+          '200':
+            description: 'success, returns archive of copied resource'
+          '400':
+            description: >-
+              client error, bad parameter, details in JSON response body, one
+              of:
+          '404':
+            description: 'client error, resource not found, one of:'
+          '500':
+            description: server error
+      put:
+        description: Extract an archive of files or folders to a directory in a container
+        queryParamaters:
+          path:
+            description: path to a directory in the container
+          noOverwriteDirNonDir:
+            description: 'If “1”, “true”, or “True” then it will be an error'
+        responses:
+          '200':
+            description: the content was extracted successfully
+          '400':
+            description: >-
+              client error, bad parameter, details in JSON response body, one
+              of:
+          '403':
+            description: 'client error, permission denied, the volume'
+          '404':
+            description: 'client error, resource not found, one of:'
+          '500':
+            description: server error
+    /exec:
+      post:
+        description: Exec Create
+        responses:
+          '201':
+            description: no error
+          '404':
+            description: no such container
+          '409':
+            description: container is paused
+          '500':
+            description: server error
+/images:
+  /json:
+    get:
+      description: List Images
+      queryParamaters:
+        all:
+          description: '1/True/true or 0/False/false, default false'
+        filters:
+          description: >-
+            a JSON encoded value of the filters (a map[string][]string) to
+            process on the images list. Available filters:
+        filter:
+          description: only return images with the specified name
+  /create:
+    post:
+      description: Create an image
+      queryParamaters:
+        fromImage:
+          description: Name of the image to pull. The name may include a tag or
+        fromSrc:
+          description: Source to import.  The value may be a URL from which the image
+        repo:
+          description: Repository name given to an image when it is imported.
+        tag:
+          description: Tag or digest.
+      responses:
+        '200':
+          description: no error
+        '500':
+          description: server error
+      headers:
+        X-Registry-Auth:
+          description: >-
+            base64-encoded AuthConfig object, containing either login
+            information, or a token
+  '/{id}':
+    /json:
+      get:
+        description: Inspect an image
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: no such image
+          '500':
+            description: server error
+    /history:
+      get:
+        description: Get the history of an image
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: no such image
+          '500':
+            description: server error
+    /push:
+      post:
+        description: Push an image on the registry
+        queryParamaters:
+          tag:
+            description: >-
+              The tag to associate with the image on the registry. This is
+              optional.
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: no such image
+          '500':
+            description: server error
+        headers:
+          X-Registry-Auth:
+            description: >-
+              base64-encoded AuthConfig object, containing either login
+              information, or a token
+    /tag:
+      post:
+        description: Tag an image into a repository
+        queryParamaters:
+          repo:
+            description: The repository to tag in
+          tag:
+            description: The new tag name
+        responses:
+          '201':
+            description: no error
+          '400':
+            description: bad parameter
+          '404':
+            description: no such image
+          '409':
+            description: conflict
+          '500':
+            description: server error
+    delete:
+      description: Remove an image
+      queryParamaters:
+        force:
+          description: '1/True/true or 0/False/false, default false'
+        noprune:
+          description: '1/True/true or 0/False/false, default false'
+      responses:
+        '200':
+          description: no error
+        '404':
+          description: no such image
+        '409':
+          description: conflict
+        '500':
+          description: server error
+    /get:
+      get:
+        description: Get a tarball containing all images in a repository
+        responses:
+          '200':
+            description: no error
+          '500':
+            description: server error
+  /search:
+    get:
+      description: Search images
+      queryParamaters:
+        term:
+          description: term to search
+        limit:
+          description: maximum returned search results
+        filters:
+          description: >-
+            a JSON encoded value of the filters (a map[string][]string) to
+            process on the images list. Available filters:
+      responses:
+        '200':
+          description: no error
+        '500':
+          description: server error
+  /get:
+    get:
+      description: Get a tarball containing all images
+      responses:
+        '200':
+          description: no error
+        '500':
+          description: server error
+  /load:
+    post:
+      description: Load a tarball with a set of images and tags into docker
+      queryParamaters:
+        quiet:
+          description: 'Boolean value, suppress progress details during load. Defaults'
+      responses:
+        '200':
+          description: no error
+        '500':
+          description: server error
+/build:
+  post:
+    description: Build image from a Dockerfile
+    queryParamaters:
+      dockerfile:
+        description: Path within the build context to the Dockerfile. This is
+      t:
+        description: 'A name and optional tag to apply to the image in the name:tag format.'
+      remote:
+        description: A Git repository URI or HTTP/HTTPS context URI. If the
+      q:
+        description: Suppress verbose build output.
+      nocache:
+        description: Do not use the cache when building the image.
+      pull:
+        description: Attempt to pull the image even if an older image exists locally.
+      rm:
+        description: >-
+          Remove intermediate containers after a successful build (default
+          behavior).
+      forcerm:
+        description: Always remove intermediate containers (includes rm).
+      memory:
+        description: Set memory limit for build.
+      memswap:
+        description: 'Total memory (memory + swap), -1 to enable unlimited swap.'
+      cpushares:
+        description: CPU shares (relative weight).
+      cpusetcpus:
+        description: 'CPUs in which to allow execution (e.g., 0-3, 0,1).'
+      cpuperiod:
+        description: The length of a CPU period in microseconds.
+      cpuquota:
+        description: Microseconds of CPU time that the container can get in a CPU period.
+      buildargs:
+        description: JSON map of string pairs for build-time variables. Users pass
+      shmsize:
+        description: >-
+          Size of /dev/shm in bytes. The size must be greater than 0.  If
+          omitted the system uses 64MB.
+      labels:
+        description: JSON map of string pairs for labels to set on the image.
+    responses:
+      '200':
+        description: no error
+      '500':
+        description: server error
+    headers:
+      Content-type:
+        description: Set to "application/tar".
+      X-Registry-Config:
+        description: A base64-url-safe-encoded Registry Auth Config JSON
+/auth:
+  post:
+    description: Check auth configuration
+    responses:
+      '200':
+        description: no error
+      '204':
+        description: no error
+      '500':
+        description: server error
+/info:
+  get:
+    description: Display system-wide information
+    responses:
+      '200':
+        description: no error
+      '500':
+        description: server error
+/version:
+  get:
+    description: Show the docker version information
+    responses:
+      '200':
+        description: no error
+      '500':
+        description: server error
+/_ping:
+  get:
+    description: Ping the docker server
+    responses:
+      '200':
+        description: no error
+      '500':
+        description: server error
+/commit:
+  post:
+    description: Create a new image from a container’s changes
+    queryParamaters:
+      container:
+        description: source container
+      repo:
+        description: repository
+      tag:
+        description: tag
+      comment:
+        description: commit message
+      author:
+        description: 'author (e.g., “John Hannibal Smith'
+      pause:
+        description: >-
+          1/True/true or 0/False/false, whether to pause the container before
+          committing
+      changes:
+        description: Dockerfile instructions to apply while committing
+    responses:
+      '201':
+        description: no error
+      '404':
+        description: no such container
+      '500':
+        description: server error
+/events:
+  get:
+    description: Monitor Docker’s events
+    queryParamaters:
+      since:
+        description: Timestamp. Show all events created since timestamp and then stream
+      until:
+        description: >-
+          Timestamp. Show events created until given timestamp and stop
+          streaming
+      filters:
+        description: >-
+          A json encoded value of the filters (a map[string][]string) to process
+          on the event list. Available filters:
+    responses:
+      '200':
+        description: no error
+      '500':
+        description: server error
+/exec:
+  '/{id}':
+    /start:
+      post:
+        description: Exec Start
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: no such exec instance
+    /resize:
+      post:
+        description: Exec Resize
+        queryParamaters:
+          h:
+            description: height of tty session
+          w:
+            description: width
+        responses:
+          '201':
+            description: no error
+          '404':
+            description: no such exec instance
+    /json:
+      get:
+        description: Exec Inspect
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: no such exec instance
+          '500':
+            description: server error
+/volumes:
+  get:
+    description: List volumes
+    queryParamaters:
+      filters:
+        description: >-
+          JSON encoded value of the filters (a map[string][]string) to process
+          on the volumes list. Available filters:
+    responses:
+      '200':
+        description: no error
+      '500':
+        description: server error
+  /create:
+    post:
+      description: Create a volume
+      responses:
+        '201':
+          description: no error
+        '500':
+          description: server error
+  '/{id}':
+    get:
+      description: Inspect a volume
+      responses:
+        '200':
+          description: no error
+        '404':
+          description: no such volume
+        '500':
+          description: server error
+    delete:
+      description: Remove a volume
+      responses:
+        '204':
+          description: no error
+        '404':
+          description: no such volume or volume driver
+        '409':
+          description: volume is in use and cannot be removed
+        '500':
+          description: server error
+/networks:
+  get:
+    description: List networks
+    queryParamaters:
+      filters:
+        description: 'JSON encoded network list filter. The filter value is one of:'
+    responses:
+      '200':
+        description: no error
+      '500':
+        description: server error
+  '/{id}':
+    get:
+      description: Inspect network
+      responses:
+        '200':
+          description: no error
+        '404':
+          description: network not found
+    /connect:
+      post:
+        description: Connect a container to a network
+        responses:
+          '200':
+            description: no error
+          '403':
+            description: operation not supported for swarm scoped networks
+          '404':
+            description: network or container is not found
+          '500':
+            description: Internal Server Error
+    /disconnect:
+      post:
+        description: Disconnect a container from a network
+        responses:
+          '200':
+            description: no error
+          '403':
+            description: operation not supported for swarm scoped networks
+          '404':
+            description: network or container not found
+          '500':
+            description: Internal Server Error
+    delete:
+      description: Remove a network
+      responses:
+        '204':
+          description: no error
+        '404':
+          description: no such network
+        '500':
+          description: server error
+  /create:
+    post:
+      description: Create a network
+      responses:
+        '201':
+          description: no error
+        '404':
+          description: plugin not found
+        '500':
+          description: server error
+/plugins:
+  get:
+    description: List plugins
+    responses:
+      '200':
+        description: no error
+      '500':
+        description: server error
+  /pull?name=<plugin name>:
+    post:
+      description: Install a plugin
+      queryParamaters:
+        name:
+          description: Name of the plugin to pull. The name may include a tag or digest.
+      responses:
+        '200':
+          description: no error
+        '500':
+          description: plugin already exists
+  '/{id}':
+    get:
+      description: Inspect a plugin
+      responses:
+        '200':
+          description: no error
+        '404':
+          description: plugin not installed
+    /enable:
+      post:
+        description: Enable a plugin
+        responses:
+          '200':
+            description: no error
+          '500':
+            description: plugin is already enabled
+    /disable:
+      post:
+        description: Disable a plugin
+        responses:
+          '200':
+            description: no error
+          '500':
+            description: plugin is already disabled
+    delete:
+      description: Remove a plugin
+      responses:
+        '200':
+          description: no error
+        '404':
+          description: plugin not installed
+        '500':
+          description: plugin is active
+/nodes:
+  get:
+    description: List nodes
+    queryParamaters:
+      filters:
+        description: >-
+          a JSON encoded value of the filters (a map[string][]string) to process
+          on the
+    responses:
+      '200':
+        description: no error
+      '500':
+        description: server error
+  '/{id}':
+    get:
+      description: Inspect a node
+      responses:
+        '200':
+          description: no error
+        '404':
+          description: no such node
+        '500':
+          description: server error
+    delete:
+      description: Remove a node
+      queryParamaters:
+        force:
+          description: '1/True/true or 0/False/false, Force remove an active node.'
+      responses:
+        '200':
+          description: no error
+        '404':
+          description: no such node
+        '500':
+          description: server error
+    /update:
+      post:
+        description: Update a node
+        queryParamaters:
+          version:
+            description: The version number of the node object being updated. This is
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: no such node
+          '500':
+            description: server error
+/swarm:
+  get:
+    description: Inspect swarm
+    responses:
+      '200':
+        description: no error
+  /init:
+    post:
+      description: Initialize a new swarm
+      responses:
+        '200':
+          description: no error
+        '400':
+          description: bad parameter
+        '406':
+          description: node is already part of a swarm
+  /join:
+    post:
+      description: Join an existing swarm
+      responses:
+        '200':
+          description: no error
+        '400':
+          description: bad parameter
+        '406':
+          description: node is already part of a swarm
+  /leave:
+    post:
+      description: Leave a swarm
+      responses:
+        '200':
+          description: no error
+        '406':
+          description: node is not part of a swarm
+  /update:
+    post:
+      description: Update a swarm
+      queryParamaters:
+        version:
+          description: The version number of the swarm object being updated. This is
+        rotateWorkerToken:
+          description: Set to true (or 1) to rotate the worker join token.
+        rotateManagerToken:
+          description: Set to true (or 1) to rotate the manager join token.
+      responses:
+        '200':
+          description: no error
+        '400':
+          description: bad parameter
+        '406':
+          description: node is not part of a swarm
+/services:
+  get:
+    description: List services
+    queryParamaters:
+      filters:
+        description: >-
+          a JSON encoded value of the filters (a map[string][]string) to process
+          on the
+    responses:
+      '200':
+        description: no error
+      '500':
+        description: server error
+  /create:
+    post:
+      description: Create a service
+      responses:
+        '201':
+          description: no error
+        '406':
+          description: server error or node is not part of a swarm
+        '409':
+          description: name conflicts with an existing object
+      headers:
+        Content-type:
+          description: Set to "application/json".
+        X-Registry-Auth:
+          description: 'base64-encoded AuthConfig object, containing either'
+  '/{id}':
+    delete:
+      description: Remove a service
+      responses:
+        '200':
+          description: no error
+        '404':
+          description: no such service
+        '500':
+          description: server error
+    get:
+      description: Inspect one or more services
+      responses:
+        '200':
+          description: no error
+        '404':
+          description: no such service
+        '500':
+          description: server error
+    /update:
+      post:
+        description: Update a service
+        queryParamaters:
+          version:
+            description: The version number of the service object being updated. This is
+        responses:
+          '200':
+            description: no error
+          '404':
+            description: no such service
+          '500':
+            description: server error
+        headers:
+          Content-type:
+            description: Set to "application/json".
+          X-Registry-Auth:
+            description: 'base64-encoded AuthConfig object, containing either'
+/tasks:
+  get:
+    description: List tasks
+    queryParamaters:
+      filters:
+        description: >-
+          a JSON encoded value of the filters (a map[string][]string) to process
+          on the
+    responses:
+      '200':
+        description: no error
+      '500':
+        description: server error
+  '/{id}':
+    get:
+      description: Inspect a task
+      responses:
+        '200':
+          description: no error
+        '404':
+          description: unknown task
+        '500':
+          description: server error
