@@ -31,9 +31,13 @@ describe('Integration::Parse', ()=>{
       })
 
       it('should toRaml10Obj', (done)=>{
-        raml = endpoints_124.toRaml10Obj()
-        expect( raml ).to.be.ok
-        expect( raml ).to.contain.keys('/containers', 'title')
+        raml_obj = endpoints_124.toRaml10Obj()
+        expect( raml_obj ).to.be.ok
+        expect( raml_obj ).to.contain.keys('/containers', 'title')
+        expect( raml_obj['/containers'] ).to.contain.keys('/json')
+        expect( raml_obj['/containers']['/json'] ).to.contain.keys('get')
+        expect( raml_obj['/containers']['/json']['get'] ).to.contain.keys('responses')
+        expect( raml_obj['/containers']['/json']['get']['responses'] ).to.contain.keys("200")
         done()
       })
 
@@ -66,7 +70,7 @@ describe('Integration::Parse', ()=>{
       })
 
       it('should save a file', (done)=>{
-        fs.writeFileAsync(path.join(__dirname,'fixture','docker_remote_api_v1.24.raml'), raml_store)
+        fs.writeFileAsync(path.join(__dirname,'fixture','docker_remote_api_v1.24.raml'), "#%RAML 0.8\n"+raml_store)
           .then( () => done() )
           .catch(done)
       })

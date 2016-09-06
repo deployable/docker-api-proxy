@@ -6,7 +6,9 @@ const needle = Promise.promisifyAll(require('needle'))
 const fs = Promise.promisifyAll(require('fs'))
 const path = require('path')
 const yaml = require('js-yaml')
-const _ = require('lodash')
+const _ = {}
+_.keys = require('lodash.keys')
+_.toInteger = require('lodash.toInteger')
 
 // Make cheerio accessible
 var $ = null
@@ -133,7 +135,7 @@ class DockerApiStatusCode{
     debug('DockerApiStatusCode parsing [%s]', string)
     let code_description = string.match(/^(\d+)\s+.\s+(.+)/)
     if ( ! code_description ) throw new Error(`StatusCode string could not be parsed [${string}]`);
-    let code = code_description[1]
+    let code = _.toInteger(code_description[1])
     let description = code_description[2]
     debug('DockerApiStatusCode parsed [%s] [%s]', code, description)
     return new DockerApiStatusCode({ code: code, description: description })
@@ -267,7 +269,7 @@ class DockerApiEndpoint{
     if ( this.description )     o.description = this.description
     if ( this.queryParams ) {
       if (!this.queryParams.toRaml10Obj) throw new Error('queryParams'+typeof this.queryParams)
-      o.queryParamaters = this.queryParams.toRaml10Obj()
+      o.queryParameters = this.queryParams.toRaml10Obj()
     }
     if ( this.statusCodes )     o.responses = this.statusCodes.toRaml10Obj()
     if ( this.requestHeaders )  o.headers = this.requestHeaders.toRaml10Obj()
@@ -412,6 +414,7 @@ class DockerApiParse{
           if ( el.name === 'h3' ) {
             // A rogue h3
             if ( $el.text().match(/Image tarball format/) ) return;
+
             if (started) endpoint_index.add(current_endpoint);
             started = true
             current_endpoint = null
