@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/deployable/docker-api-proxy.gi.git"
+    "url": "https://github.com/deployable/docker-api-proxy.git"
   },
   "keywords": [
     "docker",
@@ -18,11 +18,11 @@
     "raml"
   ],
   "author": "Matt Hoyle",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/deployable/docker-api-proxy.gi/issues"
+    "url": "https://github.com/deployable/docker-api-proxy/issues"
   },
-  "homepage": "https://github.com/deployable/docker-api-proxy.gi#readme",
+  "homepage": "https://github.com/deployable/docker-api-proxy",
   "dependencies": {
     "bluebird": "^3.4.6",
     "commonmark": "^0.26.0",
