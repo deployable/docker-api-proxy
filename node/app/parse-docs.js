@@ -22,113 +22,13 @@ if (process.env.NODE_ENV != 'production' ){
 }
 
 //https://docs.docker.com/engine/reference/api/docker_remote_api_v1.24/
+//https://raw.githubusercontent.com/docker/docker/master/docs/reference/api/docker_remote_api_v1.25.md
 
-
-class DockerApiArrayStore{
-  constructor(options){
-    this.store = []
-    if (options.store) this.store = options.store;
-  }
-  toJSON(){
-    return this.store.map((item)=>{
-      return item.toJSON()
-    })
-  }
-  toRaml10Obj(){
-    let o = {}
-    this.store.forEach((item)=>{
-      Object.assign( o, item.toRaml10Obj() )
-    })
-    return o
-  }
-}
-
-
-class DockerApiQueryParam {
-  static parse(string){
-    debug('DockerApiQueryParam parsing [%s]', string)
-    let name_description = string.match(/^(\w+)\s+.\s+(.+)/)
-    if ( ! name_description ) throw new Error('Couldnt parse query param '+string)
-    let name = name_description[1]
-    let description = name_description[2]
-    debug('DockerApiQueryParam parsed [%s] [%s]', name, description)
-    return new DockerApiQueryParam({ name: name, description: description })
-  }
-  constructor(options){
-    this.name = options.name
-    if (options.description) this.description = options.description
-  }
-  toJSON(){
-    return {
-      name: this.name,
-      description: this.description
-    }
-  }
-  toRaml10Obj(){
-    let o = {}
-    o[this.name] = {
-      description: this.description
-    }
-    return o
-  }
-}
-
-class DockerApiQueryParams extends DockerApiArrayStore{
-  static parse($elements){
-    debug('DockerApiQueryParams parsing [%s]', $elements.toString())
-    let query_params = []
-    $elements.children().each((i,element)=> {
-      if ( element.name === 'text' ) return;
-      let element_text = $(element).text()
-      query_params.push( DockerApiQueryParam.parse(element_text) )
-    })
-    debug('DockerApiQueryParams parsed [%s]', query_params)
-    return new DockerApiQueryParams ({ store: query_params })
-  }
-}
-
-class DockerApiRequestHeader {
-  static parse(string){
-    debug('DockerApiRequestHeader parsing [%s]', string)
-    let name_description = string.match(/^([\w\-]+)\s+.\s+(.+)/)
-    if ( ! name_description ) throw new Error('Couldnt parse query param '+string)
-    let name = name_description[1]
-    let description = name_description[2]
-    debug('DockerApiRequestHeader parsed [%s] [%s]', name, description)
-    return new DockerApiRequestHeader({ name: name, description: description })
-  }
-  constructor(options){
-    this.name = options.name
-    if (options.description) this.description = options.description
-  }
-  toJSON(){
-    return {
-      name: this.name,
-      description: this.description
-    }
-  }
-  toRaml10Obj(){
-    let o = {}
-    o[this.name] = {
-      description: this.description
-    }
-    return o
-  }
-}
-
-class DockerApiRequestHeaders extends DockerApiArrayStore{
-  static parse($elements){
-    debug('DockerApiRequestHeaders parsing [%s]', $elements.toString())
-    let request_headers = []
-    $elements.children().each((i,element)=> {
-      if ( element.name === 'text' ) return;
-      let element_text = $(element).text()
-      request_headers.push( DockerApiRequestHeader.parse(element_text) )
-    })
-    debug('DockerApiRequestHeaders parsed [%s]', request_headers)
-    return new DockerApiRequestHeaders({store: request_headers})
-  }
-}
+const DockerApiArrayStore = require('./docker_api_array_store')
+const DockerApiQueryParam = require('./docker_api_query_param')
+const DockerApiQueryParams = require('./docker_api_query_params')
+const DockerApiRequestHeader = require('./docker_api_request_header')
+const DockerApiRequestHeaders = require('./docker_api_request_headers')
 
 class DockerApiStatusCode{
   static parse(string){
@@ -343,6 +243,10 @@ class DockerApiEndpointIndex{
 // static methods to fetchc and parse
 class DockerApiParse{
   static fetchDocco(filename){
+
+    let html_url = 'https://docs.docker.com/engine/reference/api'
+    let md_url = 'https://raw.githubusercontent.com/docker/docker/master/docs/reference/api'
+
     return new Promise( (resolve, reject)=> {
       fs.readFileAsync(path.join(__dirname,filename),'utf8')
       .then( (html)=>{
@@ -352,7 +256,8 @@ class DockerApiParse{
       .catch( ( err )=> {
         debug('downloading file')
         return needle
-          .getAsync(`https://docs.docker.com/engine/reference/api/${filename}/`)
+          .getAsync(`${html_url}/${filename}/`)
+          //.getAsync(`${md_url}/${filename}`)
           .then( (resp) => {
             debug('writing response')
             fs.writeFileAsync(path.join(__dirname,filename), resp.body)
@@ -369,8 +274,10 @@ class DockerApiParse{
   static buildConfig(options){
     if ( ! options ) options = {}
     let file_prefix = 'docker_remote_api_v'
+    //let file_suffix = '.md'
+    let file_suffix = ''
     let version = options.version || '1.24'
-    return this.fetchDocco(file_prefix+version)
+    return this.fetchDocco(file_prefix+version+file_suffix)
     .then( (html)=> {
       $ = cheerio.load( html )
       let docco = $('#DocumentationText').contents()

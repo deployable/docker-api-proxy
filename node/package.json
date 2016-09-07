@@ -15,7 +15,8 @@
     "api",
     "proxy",
     "osprey",
-    "raml"
+    "raml",
+    "deployable"
   ],
   "author": "Matt Hoyle",
   "license": "Apache-2.0",
