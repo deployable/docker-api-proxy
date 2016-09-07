@@ -1,0 +1,3 @@
+from node:6
+add app.tgz
+run npm install
